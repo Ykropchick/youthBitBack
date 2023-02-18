@@ -16,35 +16,27 @@ class NotionDaemon(Daemon):
             start_date=adddate(now(), -7 * {working_for})
         """
         ).fetchall()
-
+        res = [a[0] for a in res]
         return res
 
-    def crecte_notion(self, cur, working_for, id):
-        description = ""
+    def crecte_notion(self, cur, working_for, user_id):
         if working_for in (1, 2):
-            description = f"""
-                Вы уже {"неделю" if working_for == 1 else '2 недели'}
-                являетесь членом нашей команды,
-                заполните пожалуйста форму обратной связи: 
-                __URL__
-                """
+            description = """Вы уже {} являетесь членом нашей команды, заполните пожалуйста форму обратной связи: __URL__""".format("неделю" if working_for == 1 else '2 недели')
         else:
-            description = f""" 
-                Конец вашего онбординга близок, в скором времени с вами свяжется ваш HR для интервью
-                            """
-        cur.execute(
-            f"""
-            INSERT INTO notifications_notification
+            description = "Конец вашего онбординга близок, в скором времени с вами свяжется ваш HR для интервью"
+
+
+        command = """
+            INSERT INTO notifications_notification (title, description, date, is_readed, sender, to_id)
                 VALUES(
-                    title="Обратная связь",
-                    description={description},
-                    date=GETDATE(),
-                    is_readed=false,
-                    sender=(SELECT HR_link FROM users_customuser WHERE id={id}),
-                    to_id={id}
-                    )
-            """
-        )
+                "Обратная связь", 
+                "{}",
+                date('now'), 
+                false, 
+                (SELECT HR_link FROM users_customuser WHERE id = {}), 
+                {})
+            """.format(description, user_id, user_id)
+        cur.execute(command)
 
     def create_notions(self):
         cursor = self.create_cursor()
@@ -59,12 +51,14 @@ class NotionDaemon(Daemon):
     def test_insert(self):
         cursor = self.create_cursor()
         users = cursor.execute("""SELECT id FROM users_customuser WHERE is_HR=false""").fetchmany(3)
+        users = [i[0] for i in users]
         self.crecte_notion(cursor, 1, users[0])
         self.crecte_notion(cursor, 2, users[1])
         self.crecte_notion(cursor, 4, users[2])
 
         cursor.commit()
         cursor.close()
+        self.log("insert completed")
 
     def run(self):
         while True:
