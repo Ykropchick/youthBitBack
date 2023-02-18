@@ -4,7 +4,7 @@ from users.models import Department
 
 class Module(models.Model):
     name = models.CharField('Название',max_length=100)
-    description = models.CharField('Описание', max_length=300)
+    description = models.CharField('Описание', max_length=300,null=True)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL,
 null=True, verbose_name='Отдел')
 
