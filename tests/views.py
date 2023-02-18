@@ -19,10 +19,11 @@ place='zalupa')
             firstname = 'test'
             lastname = 'user'
             is_HR = randint(0, 1)
+            HR_link = None
             if not is_HR:
-                HR_link = choice(list(user_model.objects.filter(is_HR=True))).pk
+                HR_link = choice(user_model.objects.filter(is_HR=True)).pk
 
             user_model.objects.create_user(email=email,
-                                           password=password, firstname=firstname, lastname=lastname, is_HR=is_HR)
+                                           password=password, firstname=firstname, lastname=lastname,HR_link=HR_link, is_HR=is_HR)
 
         return HttpResponse("Готово")
