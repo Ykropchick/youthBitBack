@@ -12,7 +12,8 @@ place='zalupa')
 
         users = []
         user_model = get_user_model()
-        for i in range(10):
+        start_id = max(user.pk for user in user_model.objects.all())
+        for i in range(start_id+1,start_id+11):
             email = f'test{i}@test.com'
             password = 'Qwerty123321'
             firstname = 'test'
