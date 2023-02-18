@@ -88,12 +88,10 @@ if __name__ == "__main__":
             d.is_running()
         elif 'test_insert' == sys.argv[1]:
             d.test_insert()
-        elif 'run' == sys.argv[1]:
-            pass
         else:
             print("Unknown command")
             sys.exit(2)
         sys.exit(0)
     else:
-        print(f"usage: {sys.argv[0]} start|stop|restart|check")
+        print(f"usage: {sys.argv[0]} start|stop|restart|check|test_insert")
         sys.exit(2)
