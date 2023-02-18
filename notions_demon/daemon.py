@@ -7,7 +7,7 @@ class NotionDaemon(Daemon):
     def create_cursor(self):
         c = connect("db.sqlite3")
         return c
-    def fetch_users(self, cur, working_for, is_test=False):
+    def fetch_users(self, cur, working_for):
         res = cur.execute(
         f"""
         SELECT id FROM users_customuser
@@ -76,7 +76,7 @@ class NotionDaemon(Daemon):
 
 
 if __name__ == "__main__":
-    d = NotionDaemon("./pidfile.pid")
+    d = NotionDaemon("notions_demon/pidfile.pid")
     if len(sys.argv) == 2:
         if 'start' == sys.argv[1]:
             d.start()
