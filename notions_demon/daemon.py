@@ -11,7 +11,8 @@ class NotionDaemon(Daemon):
         res = cur.execute(
         f"""
         SELECT id FROM users_customuser
-        WHERE is_HR=false AND 
+        WHERE is_HR=false AND
+            is_staff AND
             is_started=true AND
             start_date=adddate(now(), -7 * {working_for})
         """
@@ -50,7 +51,7 @@ class NotionDaemon(Daemon):
 
     def test_insert(self):
         cursor = self.create_cursor()
-        users = cursor.execute("""SELECT id FROM users_customuser WHERE is_HR=false""").fetchmany(3)
+        users = cursor.execute("""SELECT id FROM users_customuser WHERE is_HR=false AND is_staff=false""").fetchmany(3)
         users = [i[0] for i in users]
         self.crecte_notion(cursor, 1, users[0])
         self.crecte_notion(cursor, 2, users[1])
