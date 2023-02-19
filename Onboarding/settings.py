@@ -88,13 +88,19 @@ WSGI_APPLICATION = 'Onboarding.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+# To use Neon with Django, you have to create a Project on Neon and specify the project connection settings in your settings.py in the same way as for standalone Postgres.
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+  'default': {
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': 'youthbit',
+    'USER': 'Shkolenko02-03-2004',
+    'PASSWORD': '4FY1abpeCzJq',
+    'HOST': 'ep-red-wave-605810.eu-central-1.aws.neon.tech',
+    'PORT': '5432',
+  }
 }
+
 
 
 # Password validation
@@ -188,7 +194,7 @@ CORS_ALLOW_HEADERS = "*"
 CORS_ORIGIN_WHITELIST = [         
     'http://127.0.0.1:8000',         
     'http://localhost:8080',
-    'https://youth-bit-front.vercel.app/',
+    'https://youth-bit-front.vercel.app',
 ]
 
 STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
