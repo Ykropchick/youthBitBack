@@ -19,18 +19,31 @@ class ContactViewSet(ModelViewSet):
     queryset = Contact.objects.all()
 
 
-class GetCurUserDataView(GenericAPIView):
-    serializer_class = UserSerializer
-    permission_classes = (IsAuthenticated,)
 
-    def get_queryset(self):
-        user = self.request.user
-        return user
+class GetCurUserDataView(APIView):
+    def get(self, request):
+        users = CustomUser.objects.filter(HR_link=request.user.pk)
+        users_serializer = UserSerializer(users)
+        data = users_serializer.data
+        department = Department.objects.get(pk=data['department'])
+        department_serializer = Departmenterializer(department)
+        response = data
+        response['department'] = department_serializer.data['name']
+        return Response(response)
 
-    def get(self,request,*args,**kwargs):
-        queryset = self.get_queryset()
-        serializer = self.serializer_class(queryset,*args,*kwargs)
-        return Response(serializer.data)
+
+# class GetCurUserDataView(GenericAPIView):
+#     serializer_class = UserSerializer
+#     permission_classes = (IsAuthenticated,)
+#
+#     def get_queryset(self):
+#         user = self.request.user
+#         return user
+#
+#     def get(self,request,*args,**kwargs):
+#         queryset = self.get_queryset()
+#         serializer = self.serializer_class(queryset,*args,*kwargs)
+#         return Response(serializer.data)
 
 
 
