@@ -22,8 +22,8 @@ class ContactViewSet(ModelViewSet):
 
 class GetCurUserDataView(APIView):
     def get(self, request):
-        users = CustomUser.objects.filter(HR_link=request.user.pk)
-        users_serializer = UserSerializer(users)
+        user = CustomUser.objects.get(pk=request.user.pk)
+        users_serializer = UserSerializer(user)
         data = users_serializer.data
         department = Department.objects.get(pk=data['department'])
         department_serializer = Departmenterializer(department)
