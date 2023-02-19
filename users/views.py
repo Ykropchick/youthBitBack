@@ -4,8 +4,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin
 
-from .serializers import ContactSerializer,UserSerializer
-from .models import Contact,CustomUser
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from .serializers import ContactSerializer,UserSerializer, Departmenterializer
+from .models import Contact,CustomUser, Department
 
 
 
@@ -30,22 +33,21 @@ class GetCurUserDataView(GenericAPIView):
         return Response(serializer.data)
 
 
-class GetSuckersListView(ListModelMixin,GenericAPIView):
-    serializer_class = UserSerializer
-    permission_classes = (IsAuthenticated,)
 
-    def get_queryset(self):
-        if self.request.user.is_HR:
-            HR_pk = self.request.user.pk
-
+class GetSuckersListView(APIView):
+    def get(self, request):
+        response = []
+        if request.user.is_HR:
+            HR_pk = request.user.pk
             users = CustomUser.objects.filter(HR_link=HR_pk)
-            return users
-        HR_pk = self.request.user.HR_link
-        users = CustomUser.objects.filter(pk=HR_pk)
-        return users
-
-    def get(self,request,*args,**kwargs):
-        return self.list(request,*args,**kwargs)
+            users_serializer = UserSerializer(users, many=True)
+            for data in users_serializer.data:
+                department = Department.objects.get(pk=data['department'])
+                department_serializer = Departmenterializer(department)
+                info = data
+                info['department'] = department_serializer.data['name']
+                response.append(info)
+            return Response(response)
 
 
 

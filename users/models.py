@@ -8,6 +8,9 @@ class Department(models.Model):
     head = models.CharField('Имя главы', max_length=40)
     place = models.CharField('Местоположение',max_length=150,null=True)
 
+    def __str__(self):
+        return self.name
+
 
 class CustomUser(AbstractBaseUser,PermissionsMixin):
 
